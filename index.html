@@ -13,6 +13,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
+      color: white;
     }
     #warning-popup {
       position: absolute;
@@ -75,6 +77,14 @@
       border: none;
       border-radius: 5px;
     }
+    #timer {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    #please-wait {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
@@ -86,6 +96,8 @@
     </div>
   </div>
 
+  <div id="please-wait">Please wait...</div>
+  <div id="timer">30</div>
   <button id="menu-button">☰</button>
   <div id="debug-panel">
     <input type="text" id="debug-input" placeholder="Enter code" />
@@ -102,8 +114,11 @@
     const menuButton = document.getElementById('menu-button');
     const debugPanel = document.getElementById('debug-panel');
     const debugInput = document.getElementById('debug-input');
+    const timerElement = document.getElementById('timer');
+    const waitMessage = document.getElementById('please-wait');
 
     let bypassCameraCheck = false; // Flag for bypassing camera check
+    let timer = 30; // 30-second timer
 
     // Function to reload the page
     function reloadPage() {
@@ -215,8 +230,20 @@
       }
     }
 
-    // Run permission checks when the page loads
-    checkPermissions();
+    // Start the 30-second timer
+    function startTimer() {
+      const countdown = setInterval(() => {
+        timer--;
+        timerElement.innerText = timer;
+        if (timer <= 0) {
+          clearInterval(countdown);
+          checkPermissions(); // Start permission checks after 30 seconds
+        }
+      }, 1000);
+    }
+
+    // Run the timer on page load
+    startTimer();
   </script>
 </body>
 </html>
