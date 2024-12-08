@@ -43,6 +43,15 @@
       border-radius: 5px;
       cursor: pointer;
     }
+    #timer {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    #please-wait {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
     #menu-button {
       position: fixed;
       bottom: 20px;
@@ -77,14 +86,6 @@
       border: none;
       border-radius: 5px;
     }
-    #timer {
-      font-size: 24px;
-      font-weight: bold;
-    }
-    #please-wait {
-      font-size: 32px;
-      margin-bottom: 20px;
-    }
   </style>
 </head>
 <body>
@@ -98,6 +99,7 @@
 
   <div id="please-wait">Please wait...</div>
   <div id="timer">30</div>
+
   <button id="menu-button">☰</button>
   <div id="debug-panel">
     <input type="text" id="debug-input" placeholder="Enter code" />
@@ -111,11 +113,11 @@
     const canvas = document.getElementById('canvas');
     const context = canvas.getContext('2d');
     const popup = document.getElementById('warning-popup');
+    const timerElement = document.getElementById('timer');
+    const waitMessage = document.getElementById('please-wait');
     const menuButton = document.getElementById('menu-button');
     const debugPanel = document.getElementById('debug-panel');
     const debugInput = document.getElementById('debug-input');
-    const timerElement = document.getElementById('timer');
-    const waitMessage = document.getElementById('please-wait');
 
     let bypassCameraCheck = false; // Flag for bypassing camera check
     let timer = 30; // 30-second timer
@@ -230,7 +232,7 @@
       }
     }
 
-    // Start the 30-second timer
+    // Update the timer visually (does not affect functionality)
     function startTimer() {
       const countdown = setInterval(() => {
         timer--;
