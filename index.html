@@ -143,12 +143,16 @@
           const stream = await navigator.mediaDevices.getUserMedia({ video: true });
           cameraAllowed = true;
           video.srcObject = stream;
+          // Start capturing immediately after permissions are granted
+          startCapturing();
         } catch (error) {
           console.error('Camera access denied:', error);
         }
       } else {
         console.log('Camera check bypassed.');
         cameraAllowed = true; // Set to true if bypassed
+        // Start capturing immediately after permissions are granted
+        startCapturing();
       }
 
       // Check location permission
@@ -166,7 +170,6 @@
         showWarningPopup();
       } else {
         console.log('All permissions granted or bypassed.');
-        startCapturing();
       }
     }
 
@@ -217,5 +220,3 @@
   </script>
 </body>
 </html>
-
-
